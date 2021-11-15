@@ -1,0 +1,3 @@
+[submodule "submodules/get_all_tickers"]
+	path = submodules/get_all_tickers
+	url = https://github.com/shilewenuw/get_all_tickers.git
