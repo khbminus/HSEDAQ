@@ -9,7 +9,7 @@ class User:
     first_name: str
     last_name: Optional[int] = None
     tournament_id: Optional[int] = None
-    money: int = 1000  # TODO: probably should be float?
+    money: float = 1000  # TODO: probably should be float?
 
 
 @dataclass
@@ -23,4 +23,4 @@ class Tournament:
 class Stock:
     ticker: str
     fetch_date: datetime
-    price: int
+    price: float

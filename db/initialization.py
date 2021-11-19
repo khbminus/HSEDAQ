@@ -24,7 +24,7 @@ def create_users_table(user_db_name: str) -> None:
     first_name    varchar(255) not null,
     last_name     varchar(255),
     tournament_id int,
-    money         int          not null,
+    money         float8       not null,
     foreign key (tournament_id)
     references tournaments (tournament_id)
 );""", "users")
@@ -48,7 +48,7 @@ def create_stocks_table(stocks_db_name: str) -> None:
 (
     ticker     varchar(10) not null,
     fetch_date timestamp   not null,
-    price      int         not null
+    price      float8      not null
 );
 """, "stocks")
 
