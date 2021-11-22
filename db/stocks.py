@@ -1,3 +1,4 @@
+from typing import Optional
 from db.types import Stock
 from db.consts import DB_NAME
 import psycopg
@@ -22,7 +23,7 @@ def update_stocks(stocks_frame: DataFrame) -> None:
     logger.debug(f"Saved {stocks_frame.shape[0]} stocks")
 
 
-def get_stock(symbol: str) -> Stock:
+def get_stock(symbol: str) -> Optional[Stock]:
     date_now = datetime.now()
     logger.debug(f"Getting stock {symbol} at {date_now}")
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
