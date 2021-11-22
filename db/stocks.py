@@ -4,7 +4,7 @@ import psycopg
 from loguru import logger
 from psycopg.rows import class_row
 from pandas import DataFrame
-import datetime
+from datetime import datetime
 
 
 def update_stocks(stocks_frame: DataFrame) -> None:
@@ -23,7 +23,7 @@ def update_stocks(stocks_frame: DataFrame) -> None:
 
 
 def get_stock(symbol: str) -> Stock:
-    date_now = datetime.datetime.now()
+    date_now = datetime.now()
     logger.debug(f"Getting stock {symbol} at {date_now}")
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(Stock)) as cur:
