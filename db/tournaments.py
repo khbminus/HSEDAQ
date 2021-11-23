@@ -1,5 +1,5 @@
 from typing import Optional, List
-from db.types import Tournament
+from db.types import Tournament, User
 from db.consts import DB_NAME
 import psycopg
 from loguru import logger
@@ -35,4 +35,12 @@ def get_all_tournaments() -> List[Tournament]:
         with conn.cursor(row_factory=class_row(Tournament)) as cur:
             res = cur.execute("SELECT * from tournaments").fetchall()
     logger.debug(f"Got {len(res)} tournaments")
+    return res
+
+
+def get_tournament_participants(tournament: Tournament) -> List[User]:
+    logger.debug(f"Getting all participants of tournament {tournament}")
+    with psycopg.connect(dbaname=DB_NAME, autocommit=True) as conn:
+        with conn.cursor(row_factory=class_row(User)) as cur:
+            res = cur.execute("SELECT * FROM users WHERE tournament_id=%s", (tournament.tournament_id,)).fetchall()
     return res
