@@ -1,12 +1,6 @@
-import telebot
-from os import environ
+from tg.bot import Bot
+import tg.functions
 
-bot = telebot.TeleBot(environ["TG_BOT"])
-
-
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message: telebot.types.Message):
-    bot.reply_to(message, "Okay, it's works")
-
-
-bot.infinity_polling()
+if __name__ == '__main__':
+    bot = Bot().bot
+    bot.infinity_polling()
