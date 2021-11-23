@@ -17,6 +17,7 @@ class Tournament:
     tournament_id: int
     start_time: datetime
     end_time: datetime
+    is_ended: bool
 
 
 @dataclass

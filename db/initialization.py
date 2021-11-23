@@ -33,11 +33,12 @@ def create_users_table(user_db_name: str) -> None:
 def create_tournaments_table(tournaments_db_name: str) -> None:
     create_wrapper(tournaments_db_name, """create table IF NOT EXISTS tournaments  
 (
-    tournament_id int       not null
+    tournament_id int                     not null
         constraint tournaments_pk
             primary key,
-    start_time    timestamp not null,
-    end_time      timestamp not null
+    start_time    timestamp               not null,
+    end_time      timestamp               not null
+    is_ended      bool      default false not null
 );
 
 """, "tournaments")

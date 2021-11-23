@@ -19,12 +19,13 @@ def save_tournament(tournament: Tournament) -> None:
     logger.debug(f"Saving {tournament}")
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(Tournament)) as cur:
-            cur.execute("""INSERT INTO tournaments(tournament_id, start_time, end_time) 
-                            VALUES (%s, %s, %s)
+            cur.execute("""INSERT INTO tournaments(tournament_id, start_time, end_time, is_ended) 
+                            VALUES (%s, %s, %s, %s)
                             ON CONFLICT (tournament_id) DO UPDATE 
                               SET start_time = excluded.start_time, 
-                                  end_time = excluded.end_time;""",
-                        (tournament.tournament_id, tournament.start_time, tournament.end_time))
+                                  end_time = excluded.end_time,
+                                  is_ended = excluded.is_ended""",
+                        (tournament.tournament_id, tournament.start_time, tournament.end_time, tournament.is_ended))
     logger.debug(f"Saved {tournament.tournament_id}")
 
 
