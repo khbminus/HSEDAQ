@@ -26,3 +26,4 @@ def tournaments_polling() -> None:
     while True:
         complete_pending_tournaments()
         time.sleep(30)  # TODO: Add as parameter?
+
