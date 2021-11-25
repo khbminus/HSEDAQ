@@ -25,3 +25,13 @@ class Stock:
     ticker: str
     fetch_date: datetime
     price: float
+
+
+@dataclass
+class Action:
+    used_id: int
+    tournament_id: int
+    buy_type: str
+    ticker: str
+    price: float
+    timestamp: datetime

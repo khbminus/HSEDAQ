@@ -21,8 +21,8 @@ def create_users_table(user_db_name: str) -> None:
     user_id       int          not null
         constraint users_pk
             primary key,
-    first_name    varchar(255) not null,
-    last_name     varchar(255),
+    first_name    text not null,
+    last_name     text,
     tournament_id int,
     money         float8       not null,
     foreign key (tournament_id)
@@ -47,7 +47,7 @@ def create_tournaments_table(tournaments_db_name: str) -> None:
 def create_stocks_table(stocks_db_name: str) -> None:
     create_wrapper(stocks_db_name, """create table if not exists stocks
 (
-    ticker     varchar(10) not null,
+    ticker     text not null,
     fetch_date timestamp   not null,
     price      float8      not null
 );
@@ -65,9 +65,7 @@ def creat_actions_table(actions_db_name: str) -> None:
             references tournaments
             on update restrict on delete restrict,
     buy_type      text      not null,
-    ticker        text      not null
-        constraint actions_stocks_ticker_fk
-            references stocks (ticker),
+    ticker        text      not null,
     price         float8    not null,
     timestamp     timestamp not null
 );""", 'actions')
