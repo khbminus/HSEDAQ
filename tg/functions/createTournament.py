@@ -41,5 +41,6 @@ def command_create_tournament(message: Message):
 
     logger.info(f"Created new tournament {tournament}")
 
-    bot.send_message(chat_id=cid, text=f"Successfully created new tournament with code phrase {tournament.tournament_id}\n"
-                     f"Use `/enter {tournament.tournament_id}` to enter to the tournament")
+    bot.send_message(chat_id=cid,
+                     text=f"Successfully created new tournament with code phrase {tournament.tournament_id}\n"
+                          f"Use `/enter {tournament.tournament_id}` to enter to the tournament")
