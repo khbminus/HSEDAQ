@@ -54,7 +54,27 @@ def create_stocks_table(stocks_db_name: str) -> None:
 """, "stocks")
 
 
+def creat_actions_table(actions_db_name: str) -> None:
+    create_wrapper(actions_db_name, """create table actions
+(
+    user_id       int       not null
+        constraint actions_users_user_id_fk
+            references users,
+    tournament_id int       not null
+        constraint actions_tournaments_tournament_id_fk
+            references tournaments
+            on update restrict on delete restrict,
+    buy_type      text      not null,
+    ticker        text      not null
+        constraint actions_stocks_ticker_fk
+            references stocks (ticker),
+    price         float8    not null,
+    timestamp     timestamp not null
+);""", 'actions')
+
+
 def init_databases(db_name: str) -> None:
     create_tournaments_table(db_name)
     create_users_table(db_name)
     create_stocks_table(db_name)
+    creat_actions_table(db_name)
