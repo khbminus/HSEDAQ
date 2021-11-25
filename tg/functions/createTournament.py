@@ -1,8 +1,6 @@
 from tg.bot import Bot
 from telebot.types import Message
 from model.tournaments import create_tournament
-from db.types import User
-from db.users import get_user, save_user
 from loguru import logger
 from typing import Optional, List
 from datetime import datetime
