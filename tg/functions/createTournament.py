@@ -49,4 +49,6 @@ def command_create_tournament(message: Message):
 
     bot.send_message(chat_id=cid,
                      text=f"Successfully created new tournament with code phrase {tournament.tournament_id}\n"
-                          f"Use `/enter {create_code_phrase(tournament)}` to enter to the tournament")
+                          f"Use `/enter {create_code_phrase(tournament)}` to enter to the tournament\n"
+                          f"Once the tournament starts, you will not be able to leave it until"
+                          "the end of the tournament")

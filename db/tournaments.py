@@ -33,11 +33,9 @@ def save_tournament(tournament: Tournament) -> None:
 
 
 def get_all_tournaments() -> List[Tournament]:
-    logger.debug("Getting all tournaments")
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(Tournament)) as cur:
             res = cur.execute("SELECT * from tournaments").fetchall()
-    logger.debug(f"Got {len(res)} tournaments")
     return res
 
 

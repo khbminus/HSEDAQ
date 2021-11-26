@@ -24,8 +24,10 @@ def complete_pending_tournaments() -> None:
     pending = list(filter(lambda t: t.end_time <= time_now and not t.is_ended, get_all_tournaments()))
     for tournament in pending:
         send_finish_statistics(tournament, get_tournament_participants(tournament))
-
         tournament.is_ended = True
+        for user in get_tournament_participants(tournament):
+            user.tournament_id = None
+            save_user(user)
         save_tournament(tournament)
 
 
