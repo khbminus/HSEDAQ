@@ -18,6 +18,7 @@ def command_get_user(message: Message):
         logger.error(f"User {user} isn't have record in the database, but using functions")
         user = User(
             user_id=uid,
+            chat_id=cid,
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name)
         save_user(user)
@@ -26,7 +27,6 @@ def command_get_user(message: Message):
         f'''
 Your first name: {user.first_name},
 Your last name: {user.last_name},
-Your money: {user.money},
 Are you participating in tournament rn: {"Yes" if user.tournament_id is not None else "No"}'''
     if user.tournament_id is not None:
         response_text += f'\nTournament id: {user.tournament_id}\nCurrent money: ${user.money}'

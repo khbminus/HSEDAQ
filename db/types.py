@@ -6,6 +6,7 @@ from datetime import datetime
 @dataclass
 class User:
     user_id: int
+    chat_id: int
     first_name: str
     last_name: Optional[str] = None
     tournament_id: Optional[int] = None
@@ -17,7 +18,8 @@ class Tournament:
     tournament_id: int
     start_time: datetime
     end_time: datetime
-    is_ended: bool
+    is_ended: bool = False
+    is_started: bool = False
 
 
 @dataclass
@@ -25,3 +27,13 @@ class Stock:
     ticker: str
     fetch_date: datetime
     price: float
+
+
+@dataclass
+class Action:
+    used_id: int
+    tournament_id: int
+    buy_type: str
+    ticker: str
+    price: float
+    timestamp: datetime

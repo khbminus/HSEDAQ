@@ -14,5 +14,5 @@ class Bot(object):
         if cls._instance is None:
             logger.info('Creating new Bot instance')
             cls._instance = super(Bot, cls).__new__(cls)
-            cls.bot = telebot.TeleBot(environ["TG_BOT"])  # TODO: Add error handling
+            cls.bot = telebot.TeleBot(environ["TG_BOT"], parse_mode='MARKDOWN')  # TODO: Add error handling
         return cls._instance
