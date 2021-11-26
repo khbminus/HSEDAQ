@@ -4,7 +4,7 @@ from db.types import Tournament  # TODO: move types from db?
 from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament
 from db.users import get_user, save_user
 from datetime import datetime
-from view.tournaments import send_finish_statistics
+from view.tournaments import send_finish_statistics, send_start_message
 
 
 # TODO: options?
@@ -26,6 +26,13 @@ def complete_pending_tournaments() -> None:
         send_finish_statistics(tournament, get_tournament_participants(tournament))
 
 
+def start_tournaments() -> None:
+    time_now = datetime.now()
+    pending = list(filter(lambda t: t.start_time >= time_now and not t.is_started, get_all_tournaments()))
+    for tournament in pending:
+        send_start_message(tournament)
+
+
 def check_correct_code_phrase(code_phrase: str) -> bool:
     return code_phrase.isdigit() and get_tournament(int(code_phrase)) is not None
 
@@ -43,3 +50,12 @@ def tournaments_polling() -> None:
     while True:
         complete_pending_tournaments()
         time.sleep(30)  # TODO: Add as parameter?
+
+
+def create_code_phrase(tournament: Tournament) -> str:
+    """
+    Generate code phrase to enter tournament for /enter <tournament> instead of using deep linking
+    :param tournament: tournament to link with
+    :return: code phrase
+    """
+    return str(tournament.tournament_id)  # WOW
