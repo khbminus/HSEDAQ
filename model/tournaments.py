@@ -1,7 +1,8 @@
 import time
 
 from db.types import Tournament  # TODO: move types from db?
-from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants
+from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament
+from db.users import get_user, save_user
 from datetime import datetime
 from view.tournaments import send_finish_statistics
 
@@ -23,6 +24,19 @@ def complete_pending_tournaments() -> None:
     pending = list(filter(lambda t: t.end_time <= time_now and not t.is_ended, get_all_tournaments()))
     for tournament in pending:
         send_finish_statistics(tournament, get_tournament_participants(tournament))
+
+
+def check_correct_code_phrase(code_phrase: str) -> bool:
+    return code_phrase.isdigit() and get_tournament(int(code_phrase)) is not None
+
+
+def enter_tournament(user_id: int, code_phrase: str) -> None:
+    tournament = get_tournament(int(code_phrase))  # If code phrase is not id
+    user = get_user(user_id)
+    if user in None or tournament is None:
+        raise ValueError  # Replace with custom exception
+    user.tournament_id, user.money = tournament.tournament_id, 1000  # starting parameters
+    save_user(user)
 
 
 def tournaments_polling() -> None:
