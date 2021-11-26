@@ -33,7 +33,7 @@ def check_correct_code_phrase(code_phrase: str) -> bool:
 def enter_tournament(user_id: int, code_phrase: str) -> None:
     tournament = get_tournament(int(code_phrase))  # If code phrase is not id
     user = get_user(user_id)
-    if user in None or tournament is None:
+    if user is None or tournament is None:
         raise ValueError  # Replace with custom exception
     user.tournament_id, user.money = tournament.tournament_id, 1000  # starting parameters
     save_user(user)

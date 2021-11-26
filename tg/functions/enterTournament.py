@@ -12,13 +12,13 @@ def validate_enter(arguments: List[str]) -> Optional[str]:
         return "Specify enter code phrase"
     if len(arguments) > 1:
         return "Too many arguments"
-    if not check_correct_code_phrase(arguments[1]):
+    if not check_correct_code_phrase(arguments[0]):
         return "Incorrect code phrase"
     return None
 
 
 @bot.message_handler(commands=['enter'])
-def command_create_tournament(message: Message):
+def command_enter_tournament(message: Message):
     cid = message.chat.id
     uid = message.from_user.id
 
@@ -31,7 +31,7 @@ def command_create_tournament(message: Message):
         bot.send_message(chat_id=cid, text=f"Bad format: {validate_error}")
         return
     try:
-        enter_tournament(uid, arguments[1])
+        enter_tournament(uid, arguments[0])
     except ValueError:
         logger.error(f"Validate failed with query {message.text}!")
         bot.send_message(chat_id=cid, text=f"WTF?! I'm failed:( Try again later")
