@@ -14,9 +14,10 @@ def start_command(message: Message):
 
     user = get_user(uid)
     if user is None:
-        logger.error(f"User {user} isn't have record in the database.")
+        logger.info(f"User {message.from_user.username} isn't have record in the database.")
         user = User(
             user_id=uid,
+            chat_id=cid,
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name)
         save_user(user)

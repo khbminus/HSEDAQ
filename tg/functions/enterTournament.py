@@ -3,9 +3,8 @@ from telebot.types import Message
 from model.tournaments import enter_tournament, check_correct_code_phrase
 from loguru import logger
 from typing import Optional, List
-from db.users import get_user, save_user
+from db.users import get_user
 from db.tournaments import get_tournament
-from db.types import User
 
 bot = Bot().bot
 
@@ -45,17 +44,6 @@ def check_new_tournament(tournament_id: int) -> Optional[str]:
 def command_enter_tournament(message: Message):
     cid = message.chat.id
     uid = message.from_user.id
-
-    user = get_user(uid)
-    if user is None:
-        bot.send_message(chat_id=cid, text="Wow, you aren't in the database... Strange, I'll report this")
-        logger.error(f"User {user} isn't have record in the database, but using functions")
-        user = User(
-            user_id=uid,
-            chat_id=cid,
-            first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name)
-        save_user(user)
 
     arguments = message.text.split()[1:]
 
