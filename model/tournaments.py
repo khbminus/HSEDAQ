@@ -4,7 +4,7 @@ from db.types import Tournament  # TODO: move types from db?
 from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament
 from db.users import get_user, save_user
 from datetime import datetime
-from view.tournaments import send_finish_statistics, send_start_message
+from tg.tournaments import send_finish_statistics, send_start_message
 
 
 # TODO: options?
@@ -25,12 +25,17 @@ def complete_pending_tournaments() -> None:
     for tournament in pending:
         send_finish_statistics(tournament, get_tournament_participants(tournament))
 
+        tournament.is_ended = True
+        save_tournament(tournament)
+
 
 def start_tournaments() -> None:
     time_now = datetime.now()
-    pending = list(filter(lambda t: t.start_time >= time_now and not t.is_started, get_all_tournaments()))
+    pending = list(filter(lambda t: t.start_time <= time_now and not t.is_started, get_all_tournaments()))
     for tournament in pending:
-        send_start_message(tournament)
+        send_start_message(tournament, get_tournament_participants(tournament))
+        tournament.is_started = True
+        save_tournament(tournament)
 
 
 def check_correct_code_phrase(code_phrase: str) -> bool:
@@ -49,7 +54,8 @@ def enter_tournament(user_id: int, code_phrase: str) -> None:
 def tournaments_polling() -> None:
     while True:
         complete_pending_tournaments()
-        time.sleep(30)  # TODO: Add as parameter?
+        start_tournaments()
+        time.sleep(10)  # TODO: Add as parameter?
 
 
 def create_code_phrase(tournament: Tournament) -> str:

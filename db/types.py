@@ -6,6 +6,7 @@ from datetime import datetime
 @dataclass
 class User:
     user_id: int
+    chat_id: int
     first_name: str
     last_name: Optional[str] = None
     tournament_id: Optional[int] = None

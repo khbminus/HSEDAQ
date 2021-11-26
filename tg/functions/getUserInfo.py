@@ -18,6 +18,7 @@ def command_get_user(message: Message):
         logger.error(f"User {user} isn't have record in the database, but using functions")
         user = User(
             user_id=uid,
+            chat_id=cid,
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name)
         save_user(user)

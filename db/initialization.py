@@ -21,6 +21,7 @@ def create_users_table(user_db_name: str) -> None:
     user_id       int          not null
         constraint users_pk
             primary key,
+    chat_id       int  not null,
     first_name    text not null,
     last_name     text,
     tournament_id int,
