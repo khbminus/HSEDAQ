@@ -38,7 +38,8 @@ def create_tournaments_table(tournaments_db_name: str) -> None:
             primary key,
     start_time    timestamp               not null,
     end_time      timestamp               not null,
-    is_ended      bool      default false not null
+    is_ended      bool      default false not null,
+    is_started    bool      default false not null
 );
 
 """, "tournaments")

@@ -18,6 +18,7 @@ class Tournament:
     start_time: datetime
     end_time: datetime
     is_ended: bool = False
+    is_started: bool = False
 
 
 @dataclass
