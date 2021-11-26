@@ -55,7 +55,7 @@ def create_stocks_table(stocks_db_name: str) -> None:
 
 
 def creat_actions_table(actions_db_name: str) -> None:
-    create_wrapper(actions_db_name, """create table actions
+    create_wrapper(actions_db_name, """create table if not exists actions
 (
     user_id       int       not null
         constraint actions_users_user_id_fk
