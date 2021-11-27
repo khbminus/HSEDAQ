@@ -5,6 +5,7 @@ from loguru import logger
 from typing import Optional, List
 from db.users import get_user
 from db.tournaments import get_tournament
+from tg.tournaments import check_new_tournament
 
 bot = Bot().bot
 
@@ -30,14 +31,6 @@ def check_another_tournament(uid: int, cid: int, arguments: List[str]) -> bool:
         return True
     bot.send_message(cid, f"You are currently in active tournament! Sorry :(")
     return False
-
-
-def check_new_tournament(tournament_id: int) -> Optional[str]:
-    tournament = get_tournament(tournament_id)
-    if tournament is None:
-        return "Tournament doesn't exists"
-    if tournament.is_ended:
-        return "Tournament has ended"
 
 
 @bot.message_handler(commands=['enter'])
