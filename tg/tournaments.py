@@ -1,4 +1,4 @@
-from db.types import Tournament, User
+from db.types import Tournament, User, Short
 from typing import List
 from tg.bot import Bot
 from typing import Optional
@@ -27,3 +27,9 @@ def check_new_tournament(tournament_id: int) -> Optional[str]:
         return "Tournament doesn't exists"
     if tournament.is_ended:
         return "Tournament has ended"
+
+
+def send_overdue_message(user: User, short: Short, price: float):
+    bot.send_message(chat_id=user.chat_id,
+                     text=f"You have the late payment: {short.amount} of {short.symbol} bought in "
+                          f"{short.buy_date.strftime('%l:%M%p on %b %d, %Y')}. You have paid ${price:.2f}")

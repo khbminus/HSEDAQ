@@ -1,16 +1,16 @@
-from typing import Optional, Set, List
+from typing import Set, List, Dict
 from db.types import Long, Short
 from db.consts import DB_NAME
 import psycopg
 from loguru import logger
 from psycopg.rows import class_row
-from pandas import DataFrame
 from datetime import datetime, timedelta
-from pandas import read_html
 from yfinance import download
 
-SNP_LINK = "https://dailypik.com/top-50-companies-sp-500/"
-tickers = list(read_html(SNP_LINK)[0]["Symbol"])
+tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM', 'JNJ', 'UNH', 'HD', 'PG', 'V',
+           'BAC', 'ADBE', 'DIS', 'CRM', 'NFLX', 'MA', 'XOM', 'PYPL', 'TMO', 'PFE', 'CMCSA', 'CSCO', 'ACN', 'MRK', 'ABT',
+           'COST', 'PEP', 'AVGO', 'NKE', 'KO', 'CVX', 'WMT', 'LLY', 'VZ', 'WFC', 'ABBV', 'INTC', 'DHR', 'MCD', 'T',
+           'TXN', 'QCOM', 'LIN', 'INTU', 'LOW']  # S&P 500 top 50
 
 
 def get_price(symbol: str) -> float:
@@ -18,6 +18,11 @@ def get_price(symbol: str) -> float:
     logger.debug(f"Getting stock {symbol} at {date_now.strftime('%l:%M%p on %b %d, %Y')}")
     data = download(symbol, interval='1m', period="1d", group_by="ticker")
     return data["Open"].dropna()[-1]
+
+
+def get_prices() -> Dict[str, float]:
+    data = download(tickers, interval='1m', period="1d", group_by="ticker")
+    return dict([(symbol, data[symbol]["Open"].dropna()[-1]) for symbol in tickers])
 
 
 def get_symbols() -> Set[str]:
@@ -44,12 +49,13 @@ def add_short(stock: Short) -> None:
                         (stock.user_id, stock.tournament_id, stock.symbol, stock.amount, stock.buy_date))
 
 
-def get_overdue_shorts(time: datetime, uid: int, tid: int) -> List[Short]:
+def get_overdue_shorts(time: datetime) -> List[Short]:
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(Short)) as cur:
             res = cur.execute(
-                "SELECT * FROM shorts WHERE buy_date <= %s and user_id=%s and tournament_id=%s",
-                (time, uid, tid)).fetchall()
+                "SELECT * FROM  shorts WHERE buy_date <= %s and amount != 0 and tournament_id in "
+                "(SELECT tournament_id from tournaments WHERE not is_ended)",
+                (time,)).fetchall()
     return res
 
 
@@ -77,7 +83,7 @@ def get_shorts_portfolio(uid: int, tid: int) -> List[Short]:
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(Short)) as cur:
             res = cur.execute(
-                "SELECT * FROM shorts WHERE user_id=%s and tournament_id=%s and buy_date >= %s",
+                "SELECT * FROM shorts WHERE user_id=%s and tournament_id=%s and buy_date >= %s and amount != 0",
                 (uid, tid, from_date)).fetchall()
     return res
 

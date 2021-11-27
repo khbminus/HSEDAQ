@@ -1,8 +1,9 @@
 from typing import Optional
-from db.stocks import get_symbols, get_price, add_long, Long, get_long, Short, add_short, get_short
-from db.users import save_user, User
+from db.stocks import get_symbols, get_price, add_long, Long, get_long, Short, add_short, get_short, get_overdue_shorts
+from db.users import save_user, User, get_user
 from db.tournaments import get_tournament
-from datetime import datetime
+from datetime import datetime, timedelta
+from tg.tournaments import send_overdue_message
 from loguru import logger
 
 
@@ -86,3 +87,16 @@ def return_short(symbol: str, amount: int, user: User) -> Optional[str]:
     save_user(user)
     short.amount = -amount
     add_short(short)
+
+
+def overdue_shorts():
+    now = datetime.now() - timedelta(days=1)
+    for short in get_overdue_shorts(now):
+        user = get_user(short.user_id)
+        price = get_price(short.symbol)
+        current_price = price * short.amount
+        user.money -= current_price
+        save_user(user)
+        send_overdue_message(user, short, current_price)
+        short.amount *= -1
+        add_short(short)

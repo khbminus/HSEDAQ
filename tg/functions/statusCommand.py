@@ -18,7 +18,7 @@ def get_portfolio(uid: int, tid: int) -> str:
     shorts = get_shorts_portfolio(uid, tid)
     for short in shorts:
         res += f"    - {short.amount} of `{short.symbol}` until " \
-               f"{(short.buy_date + timedelta(days=1)).strftime('%l:%M%p on %b %d, %Y')}"
+               f"{(short.buy_date + timedelta(days=1)).strftime('%l:%M%p on %b %d, %Y')}\n"
     return res
 
 
