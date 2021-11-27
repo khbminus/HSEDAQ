@@ -10,7 +10,7 @@ class User:
     first_name: str
     last_name: Optional[str] = None
     tournament_id: Optional[int] = None
-    money: float = 1000  # TODO: probably should be float?
+    money: float = 1000
 
 
 @dataclass
