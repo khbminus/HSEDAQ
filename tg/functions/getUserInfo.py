@@ -18,6 +18,6 @@ Your first name: {user.first_name},
 Your last name: {user.last_name},
 Are you participating in tournament rn: {"Yes" if user.tournament_id is not None else "No"}'''
     if user.tournament_id is not None:
-        response_text += f'\nTournament id: {user.tournament_id}\nCurrent money: ${user.money:.3f}'
+        response_text += f'\nTournament id: {user.tournament_id}\nCurrent money: ${user.money:.2f}'
 
     bot.send_message(chat_id=cid, text=response_text)

@@ -37,4 +37,4 @@ def command_return_short(message: Message):
         bot.send_message(chat_id=cid, text=f"Error: {return_error}")
         return
     bot.send_message(chat_id=cid, text=f"Successfully returned {arguments[1]} stocks of {arguments[0]}. "
-                                       f"Your balance is ${get_user(uid).money:.3f}")
+                                       f"Your balance is ${get_user(uid).money:.2f}")

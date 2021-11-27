@@ -22,12 +22,6 @@ class Tournament:
     is_started: bool = False
 
 
-@dataclass
-class Stock:
-    ticker: str
-    fetch_date: datetime
-    price: float
-
 
 @dataclass
 class Long:

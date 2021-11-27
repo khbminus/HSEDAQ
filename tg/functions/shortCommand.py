@@ -40,5 +40,5 @@ def command_short_stock(message: Message):
 
     due_time = datetime.now() + timedelta(days=1)  # not fair
     bot.send_message(chat_id=cid, text=f"Successfully borrowed {arguments[1]} stocks of {arguments[0]}. "
-                                       f"Your balance is ${get_user(uid).money:.3f}. "
+                                       f"Your balance is ${get_user(uid).money:.2f}. "
                                        f"Due: {due_time.strftime('%l:%M%p on %b %d, %Y')}")

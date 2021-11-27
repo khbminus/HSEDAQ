@@ -1,46 +1,27 @@
 from typing import Optional, Set, List
-from db.types import Stock, Long, Short
+from db.types import Long, Short
 from db.consts import DB_NAME
 import psycopg
 from loguru import logger
 from psycopg.rows import class_row
 from pandas import DataFrame
 from datetime import datetime, timedelta
+from pandas import read_html
+from yfinance import download
+
+SNP_LINK = "https://dailypik.com/top-50-companies-sp-500/"
+tickers = list(read_html(SNP_LINK)[0]["Symbol"])
 
 
-def update_stocks(stocks_frame: DataFrame) -> None:
-    logger.debug(f"Updating {stocks_frame.shape[0]} stocks")
-
-    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
-        with conn.cursor(row_factory=class_row(Stock)) as cur:
-            for ticker in stocks_frame.columns.levels[0]:
-                current_stocks = stocks_frame[ticker]["Open"].dropna()
-                processed_list = [(ticker, timestamp.to_pydatetime(), price) for timestamp, price in
-                                  zip(current_stocks.index, current_stocks)]
-                cur.executemany("""INSERT INTO stocks(ticker, fetch_date, price)
-                VALUES (%s, %s, %s)
-                ON CONFLICT DO NOTHING; """, processed_list)
-    logger.debug(f"Saved {stocks_frame.shape[0]} stocks")
-
-
-def get_stock(symbol: str) -> Optional[Stock]:
+def get_price(symbol: str) -> float:
     date_now = datetime.now()
-    logger.debug(f"Getting stock {symbol} at {date_now}")
-    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
-        with conn.cursor(row_factory=class_row(Stock)) as cur:
-            res = cur.execute("SELECT * from stocks "
-                              "where fetch_date = (SELECT max(fetch_date) "
-                              "from stocks where ticker = %s and fetch_date < %s) "
-                              "and ticker=%s;", (symbol, date_now, symbol)).fetchone()
-    return res
+    logger.debug(f"Getting stock {symbol} at {date_now.strftime('%l:%M%p on %b %d, %Y')}")
+    data = download(symbol, interval='1m', period="1d", group_by="ticker")
+    return data["Open"].dropna()[-1]
 
 
 def get_symbols() -> Set[str]:
-    logger.debug(f"Getting all available symbols")
-    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
-        with conn.cursor() as cur:
-            res = cur.execute("SELECT DISTINCT ticker from stocks").fetchall()
-    return set([x[0] for x in res])
+    return set(tickers)
 
 
 def add_long(stock: Long) -> None:
