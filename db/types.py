@@ -30,10 +30,17 @@ class Stock:
 
 
 @dataclass
-class Action:
-    used_id: int
+class Long:
+    user_id: int
     tournament_id: int
-    buy_type: str
-    ticker: str
-    price: float
-    timestamp: datetime
+    symbol: str
+    amount: int
+
+
+@dataclass
+class Short:
+    user_id: int
+    tournament_id: int
+    symbol: str
+    amount: int
+    buy_date: datetime

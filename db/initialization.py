@@ -56,27 +56,42 @@ def create_stocks_table(stocks_db_name: str) -> None:
 """, "stocks")
 
 
-def create_property_table(db_name: str) -> None:
-    create_wrapper(db_name, """create table property
+def create_longs_table(db_name: str) -> None:
+    create_wrapper(db_name, '''create table longs
+(
+    user_id       int  not null
+        constraint longs_users_user_id_fk
+            references users,
+    tournament_id int  not null
+        constraint longs_tournaments_tournament_id_fk
+            references tournaments,
+    symbol        text not null,
+    amount        int  not null,
+    constraint longs_pk
+        unique (user_id, tournament_id, symbol)
+);''', 'longs')
+
+
+def create_shorts_table(db_name: str) -> None:
+    create_wrapper(db_name, '''create table shorts
 (
     user_id       int       not null
-        constraint property_users_user_id_fk
+        constraint shorts_users_user_id_fk
             references users,
     tournament_id int       not null
-        constraint property_tournaments_tournament_id_fk
+        constraint shorts_tournaments_tournament_id_fk
             references tournaments,
     symbol        text      not null,
-    buy_type      text      not null,
     amount        int       not null,
-    price         float8    not null,
-    buy_time      timestamp not null,
-    constraint property_pk
-        primary key (user_id, tournament_id, symbol, buy_type)
-);""", 'property')
+    buy_date      timestamp not null,
+    constraint shorts_ok
+        unique (user_id, tournament_id, symbol, buy_date)
+);''', 'shorts')
 
 
 def init_databases(db_name: str) -> None:
     create_tournaments_table(db_name)
     create_users_table(db_name)
     create_stocks_table(db_name)
-    create_property_table(db_name)
+    create_longs_table(db_name)
+    create_shorts_table(db_name)
