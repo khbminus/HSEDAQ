@@ -23,7 +23,7 @@ def basic_checks(symbol: str, amount: int, user: User) -> Optional[str]:
 
 
 def buy_stock(symbol: str, amount: int, user: User) -> Optional[str]:  # FIXME: replace with custom Exceptions
-    if err := basic_checks(symbol, amount, user) is not None:
+    if (err := basic_checks(symbol, amount, user)) is not None:
         return err
 
     tournament = get_tournament(user.tournament_id)
@@ -39,7 +39,7 @@ def buy_stock(symbol: str, amount: int, user: User) -> Optional[str]:  # FIXME: 
 
 
 def sell_stock(symbol: str, amount: int, user: User) -> Optional[str]:  # FIXME: replace with custom Exceptions
-    if err := basic_checks(symbol, amount, user) is not None:
+    if (err := basic_checks(symbol, amount, user)) is not None:
         return err
 
     tournament = get_tournament(user.tournament_id)
@@ -56,7 +56,7 @@ def sell_stock(symbol: str, amount: int, user: User) -> Optional[str]:  # FIXME:
 
 
 def short_stock(symbol: str, amount: int, user: User) -> Optional[str]:
-    if err := basic_checks(symbol, amount, user) is not None:
+    if (err := basic_checks(symbol, amount, user)) is not None:
         return err
 
     stock = get_stock(symbol)
@@ -69,7 +69,7 @@ def short_stock(symbol: str, amount: int, user: User) -> Optional[str]:
 
 
 def return_short(symbol: str, amount: int, user: User) -> Optional[str]:
-    if err := basic_checks(symbol, amount, user) is not None:
+    if (err := basic_checks(symbol, amount, user)) is not None:
         return err
 
     tournament = get_tournament(user.tournament_id)
