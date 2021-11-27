@@ -57,7 +57,7 @@ def create_stocks_table(stocks_db_name: str) -> None:
 
 
 def create_longs_table(db_name: str) -> None:
-    create_wrapper(db_name, '''create table longs
+    create_wrapper(db_name, '''create table if not exists longs
 (
     user_id       int  not null
         constraint longs_users_user_id_fk
@@ -73,7 +73,7 @@ def create_longs_table(db_name: str) -> None:
 
 
 def create_shorts_table(db_name: str) -> None:
-    create_wrapper(db_name, '''create table shorts
+    create_wrapper(db_name, '''create table if not exists shorts
 (
     user_id       int       not null
         constraint shorts_users_user_id_fk
