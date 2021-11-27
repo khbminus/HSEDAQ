@@ -54,10 +54,8 @@ def enter_tournament(user_id: int, code_phrase: str) -> None:
 
 
 def tournaments_polling() -> None:
-    while True:
-        complete_pending_tournaments()
-        start_tournaments()
-        time.sleep(10)  # TODO: Add as parameter?
+    complete_pending_tournaments()
+    start_tournaments()
 
 
 def create_code_phrase(tournament: Tournament) -> str:

@@ -10,7 +10,7 @@ class User:
     first_name: str
     last_name: Optional[str] = None
     tournament_id: Optional[int] = None
-    money: float = 1000  # TODO: probably should be float?
+    money: float = 1000
 
 
 @dataclass
@@ -22,18 +22,19 @@ class Tournament:
     is_started: bool = False
 
 
-@dataclass
-class Stock:
-    ticker: str
-    fetch_date: datetime
-    price: float
-
 
 @dataclass
-class Action:
-    used_id: int
+class Long:
+    user_id: int
     tournament_id: int
-    buy_type: str
-    ticker: str
-    price: float
-    timestamp: datetime
+    symbol: str
+    amount: int
+
+
+@dataclass
+class Short:
+    user_id: int
+    tournament_id: int
+    symbol: str
+    amount: int
+    buy_date: datetime

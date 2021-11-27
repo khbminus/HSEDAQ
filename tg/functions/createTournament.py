@@ -23,8 +23,8 @@ def validate_create_tournament_command(arguments: List[str], now: datetime) -> O
 
     if start_time >= end_time:
         return "Incorrect order of start/end time"
-    if start_time - now < timedelta(seconds=30):
-        return "Can't create tournament that starts in less than 30 seconds"
+    # if start_time - now < timedelta(seconds=30):
+    #     return "Can't create tournament that starts in less than 30 seconds"
 
 
 @bot.message_handler(commands=['create_tournament'])

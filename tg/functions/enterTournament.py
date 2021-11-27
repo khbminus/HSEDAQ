@@ -5,6 +5,7 @@ from loguru import logger
 from typing import Optional, List
 from db.users import get_user
 from db.tournaments import get_tournament
+from tg.tournaments import check_new_tournament
 
 bot = Bot().bot
 
@@ -26,18 +27,10 @@ def check_another_tournament(uid: int, cid: int, arguments: List[str]) -> bool:
     if not tournament.is_started:
         bot.send_message(cid,
                          f"You are currently in tournament {tournament.tournament_id}." +
-                         f" Entering tournament {arguments[1]}")
+                         f" Entering tournament {arguments[0]}")
         return True
     bot.send_message(cid, f"You are currently in active tournament! Sorry :(")
     return False
-
-
-def check_new_tournament(tournament_id: int) -> Optional[str]:
-    tournament = get_tournament(tournament_id)
-    if tournament is None:
-        return "Tournament doesn't exists"
-    if tournament.is_ended:
-        return "Tournament has ended"
 
 
 @bot.message_handler(commands=['enter'])
@@ -60,6 +53,7 @@ def command_enter_tournament(message: Message):
     if new_tournament_error is not None:
         logger.debug(f"User {uid} tried to execute {message.text}, but this got '{validate_error}' error")
         bot.send_message(chat_id=cid, text=f"Bad tournament id: {new_tournament_error}")
+        return
 
     try:
         enter_tournament(uid, arguments[0])
