@@ -25,7 +25,7 @@ def create_users_table(user_db_name: str) -> None:
     first_name    text not null,
     last_name     text,
     tournament_id int,
-    money         float8       not null,
+    money         numeric       not null,
     foreign key (tournament_id)
     references tournaments (tournament_id)
 );""", "users")
@@ -44,16 +44,6 @@ def create_tournaments_table(tournaments_db_name: str) -> None:
 );
 
 """, "tournaments")
-
-
-def create_stocks_table(stocks_db_name: str) -> None:
-    create_wrapper(stocks_db_name, """create table if not exists stocks
-(
-    ticker     text not null,
-    fetch_date timestamp   not null,
-    price      float8      not null
-);
-""", "stocks")
 
 
 def create_longs_table(db_name: str) -> None:
@@ -92,6 +82,5 @@ def create_shorts_table(db_name: str) -> None:
 def init_databases(db_name: str) -> None:
     create_tournaments_table(db_name)
     create_users_table(db_name)
-    create_stocks_table(db_name)
     create_longs_table(db_name)
     create_shorts_table(db_name)

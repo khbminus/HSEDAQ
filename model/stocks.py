@@ -3,7 +3,7 @@ from db.stocks import get_symbols, get_price, add_long, Long, get_long, Short, a
 from db.users import save_user, User, get_user
 from db.tournaments import get_tournament
 from datetime import datetime, timedelta
-from tg.tournaments import send_overdue_message
+from tg.tournaments import send_overdue_message, get_float
 from loguru import logger
 
 
@@ -31,8 +31,9 @@ def buy_stock(symbol: str, amount: int, user: User) -> Optional[str]:  # FIXME: 
     price = get_price(symbol)
     current_price = price * amount
 
-    if current_price - user.money > 1e-3:
-        return f"Not enough money: {amount} of {symbol} costs ${current_price:.2f}, but you have only ${user.money:.2f}"
+    if current_price > user.money:
+        return f"Not enough money: {amount} of {symbol} costs ${get_float(current_price)}, " \
+               f"but you have only ${get_float(user.money)}"
 
     user.money -= current_price
     save_user(user)
@@ -79,9 +80,9 @@ def return_short(symbol: str, amount: int, user: User) -> Optional[str]:
     short = get_short(user.user_id, tournament.tournament_id, symbol)
     if short.amount < amount:
         return f"Can't return {amount} of {symbol} because you ought only {short.amount}"
-    if current_price - user.money > 1e-3:
-        return f"Can't return {amount} of {symbol} because it costs {current_price:.2f}, " \
-               f"however you have just {user.money:.2f}"
+    if current_price > user.money:
+        return f"Can't return {amount} of {symbol} because it costs {get_float(current_price)}, " \
+               f"however you have just {get_float(user.money)}"
 
     user.money -= current_price
     save_user(user)

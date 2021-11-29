@@ -4,6 +4,7 @@ from tg.bot import Bot
 from typing import Optional
 from db.tournaments import get_tournament
 from db.stocks import get_longs_portfolio, get_prices
+from decimal import Decimal
 
 bot = Bot().bot
 
@@ -30,10 +31,14 @@ def check_new_tournament(tournament_id: int) -> Optional[str]:
         return "Tournament has ended"
 
 
-def send_overdue_message(user: User, short: Short, price: float):
+def get_float(x: Decimal) -> str:
+    return f"{x:.2f}"
+
+
+def send_overdue_message(user: User, short: Short, price: Decimal):
     bot.send_message(chat_id=user.chat_id,
                      text=f"You have the late payment: {short.amount} of {short.symbol} bought in "
-                          f"{short.buy_date.strftime('%l:%M%p on %b %d, %Y')}. You have paid ${price:.2f}")
+                          f"{short.buy_date.strftime('%l:%M%p on %b %d, %Y')}. You have paid ${get_float(price)}")
 
 
 def get_statistics(tournament: Tournament, users: List[User]) -> str:
@@ -44,5 +49,5 @@ def get_statistics(tournament: Tournament, users: List[User]) -> str:
     result = ''
     for index, pair in enumerate(ordered_user, start=1):
         value, user = pair
-        result += f'{index}. {user.first_name} {user.last_name} with ${value:.2f} worth of stocks\n'
+        result += f'{index}. {user.first_name} {user.last_name} with ${get_float(value)} worth of stocks\n'
     return result

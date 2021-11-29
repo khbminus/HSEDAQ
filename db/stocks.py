@@ -7,6 +7,7 @@ from psycopg.rows import class_row
 from datetime import datetime, timedelta
 from yfinance import download
 import cachetools.func
+from decimal import Decimal
 
 tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM', 'JNJ', 'UNH', 'HD', 'PG', 'V',
            'BAC', 'ADBE', 'DIS', 'CRM', 'NFLX', 'MA', 'XOM', 'PYPL', 'TMO', 'PFE', 'CMCSA', 'CSCO', 'ACN', 'MRK', 'ABT',
@@ -15,14 +16,14 @@ tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM',
 
 
 @cachetools.func.ttl_cache(maxsize=128, ttl=60 * 5)
-def get_price(symbol: str) -> float:
+def get_price(symbol: str) -> Decimal:
     date_now = datetime.now()
     logger.debug(f"Getting stock {symbol} at {date_now.strftime('%l:%M%p on %b %d, %Y')}")
     data = download(symbol, interval='1m', period="1d", group_by="ticker")
-    return data["Open"].dropna()[-1]
+    return Decimal(data["Open"].dropna()[-1])
 
 
-def get_prices() -> Dict[str, float]:
+def get_prices() -> Dict[str, Decimal]:
     res = {}
     for ticker in tickers:  # PROUD FOR CACHE
         res[ticker] = get_price(ticker)

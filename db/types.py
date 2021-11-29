@@ -1,6 +1,7 @@
 from typing import Optional
 from dataclasses import dataclass
 from datetime import datetime
+from decimal import Decimal
 
 
 @dataclass(order=True)
@@ -10,7 +11,7 @@ class User:
     first_name: str
     last_name: Optional[str] = None
     tournament_id: Optional[int] = None
-    money: float = 1000
+    money: Decimal = 1000
 
 
 @dataclass
