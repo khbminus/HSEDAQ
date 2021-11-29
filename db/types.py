@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 
-@dataclass
+@dataclass(order=True)
 class User:
     user_id: int
     chat_id: int
@@ -20,7 +20,6 @@ class Tournament:
     end_time: datetime
     is_ended: bool = False
     is_started: bool = False
-
 
 
 @dataclass

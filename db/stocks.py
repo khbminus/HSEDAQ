@@ -6,6 +6,7 @@ from loguru import logger
 from psycopg.rows import class_row
 from datetime import datetime, timedelta
 from yfinance import download
+import cachetools.func
 
 tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM', 'JNJ', 'UNH', 'HD', 'PG', 'V',
            'BAC', 'ADBE', 'DIS', 'CRM', 'NFLX', 'MA', 'XOM', 'PYPL', 'TMO', 'PFE', 'CMCSA', 'CSCO', 'ACN', 'MRK', 'ABT',
@@ -13,6 +14,7 @@ tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM',
            'TXN', 'QCOM', 'LIN', 'INTU', 'LOW']  # S&P 500 top 50
 
 
+@cachetools.func.ttl_cache(maxsize=128, ttl=60)
 def get_price(symbol: str) -> float:
     date_now = datetime.now()
     logger.debug(f"Getting stock {symbol} at {date_now.strftime('%l:%M%p on %b %d, %Y')}")
@@ -21,8 +23,10 @@ def get_price(symbol: str) -> float:
 
 
 def get_prices() -> Dict[str, float]:
-    data = download(tickers, interval='1m', period="1d", group_by="ticker")
-    return dict([(symbol, data[symbol]["Open"].dropna()[-1]) for symbol in tickers])
+    res = {}
+    for ticker in tickers:  # PROUD FOR CACHE
+        res[ticker] = get_price(ticker)
+    return res
 
 
 def get_symbols() -> Set[str]:

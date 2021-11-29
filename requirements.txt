@@ -7,3 +7,4 @@ lxml~=4.6.4
 requests~=2.26.0
 loguru~=0.5.3
 psycopg~=3.0.4
+cachetools~=4.2.4
