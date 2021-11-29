@@ -1,4 +1,5 @@
 from tg.bot import Bot
+from tg.tournaments import get_float
 from telebot.types import Message
 from loguru import logger
 from typing import Optional, List
@@ -37,4 +38,4 @@ def command_buy_stock(message: Message):
         bot.send_message(chat_id=cid, text=f"Error: {buy_error}")
         return
     bot.send_message(chat_id=cid, text=f"Successfully bought {arguments[1]} stocks of {arguments[0]}. "
-                                       f"Your balance is ${get_user(uid).money:.2f}")
+                                       f"Your balance is ${get_float(get_user(uid).money)}")

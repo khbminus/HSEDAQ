@@ -4,6 +4,7 @@ from db.users import get_user
 from db.tournaments import get_tournament
 from db.stocks import get_longs_portfolio, get_shorts_portfolio, get_price
 from datetime import timedelta
+from tg.tournaments import get_float
 
 bot = Bot().bot
 
@@ -38,5 +39,5 @@ def command_status(message: Message):
             status = "Running"
 
         bot.send_message(chat_id=cid, text=f"Status: {status}\n"
-                                           f"Your money: ${user.money:.2f}\n"
+                                           f"Your money: ${get_float(user.money)}\n"
                                            f"Portfolio:\n{get_portfolio(uid, tournament.tournament_id)}")
