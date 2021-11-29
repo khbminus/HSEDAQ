@@ -9,7 +9,8 @@ from tg.functions.shortCommand import command_short_stock
 from tg.functions.returnShort import command_return_short
 from tg.functions.pricesCommand import command_prices
 from tg.functions.getCurrentRating import command_stats
+from tg.functions.helpFunction import get_help
 
 __all__ = ['command_get_user', 'command_create_tournament', 'command_enter_tournament', 'command_status',
            'start_command', 'command_buy_stock', 'command_sell_stock', 'command_short_stock', 'command_return_short',
-           'command_prices', 'command_stats']
+           'command_prices', 'command_stats', 'get_help']
