@@ -14,7 +14,7 @@ tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM',
            'TXN', 'QCOM', 'LIN', 'INTU', 'LOW']  # S&P 500 top 50
 
 
-@cachetools.func.ttl_cache(maxsize=128, ttl=60)
+@cachetools.func.ttl_cache(maxsize=128, ttl=60 * 5)
 def get_price(symbol: str) -> float:
     date_now = datetime.now()
     logger.debug(f"Getting stock {symbol} at {date_now.strftime('%l:%M%p on %b %d, %Y')}")

@@ -11,7 +11,7 @@ bot = Bot().bot
 def send_finish_statistics(tournament: Tournament, users: List[User]) -> None:
     for chat in set([user.chat_id for user in users]):
         bot.send_message(chat_id=chat,
-                         text="Tournament has ended!")
+                         text=f"Tournament has ended!\nResults: {get_statistics(tournament, users)}")
 
 
 def send_start_message(tournament: Tournament, users: List[User]) -> None:
