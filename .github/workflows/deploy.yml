@@ -1,0 +1,22 @@
+name: Deploy on Yandex.Cloud
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testing SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: 51.250.24.35
+          username: doktorkrab
+          key: ${{ HSEDAQ_YaCloud.KEY }}
+          script: |
+            whoami
+            ls -al
