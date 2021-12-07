@@ -10,13 +10,14 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    environment: HSEDAQ_YaCloud
     steps:
       - name: Testing SSH
         uses: appleboy/ssh-action@master
         with:
           host: 51.250.24.35
           username: doktorkrab
-          key: ${{ HSEDAQ_YaCloud.KEY }}
+          key: ${{ secretes.KEY }}
           script: |
             whoami
             ls -al
