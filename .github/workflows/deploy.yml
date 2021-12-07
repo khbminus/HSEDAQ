@@ -21,4 +21,4 @@ jobs:
           script: |
             cd HSEDAQ
             git pull
-            sudo systemctl restart HSEDAQ.service
+            sudo systemctl restart hsedaq.service
