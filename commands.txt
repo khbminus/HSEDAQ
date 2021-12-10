@@ -1,0 +1,10 @@
+help - get detailed help
+enter - enter to tournament
+create_tournament - create a new tournament
+about_me - get information about you
+buy - buy a stock
+sell - sell a stock
+short - short a stock
+return - return a shorted stock
+stats - get current list of players
+status - get status of current tournament

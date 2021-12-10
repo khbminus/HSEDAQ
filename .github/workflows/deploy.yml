@@ -7,16 +7,18 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  deployment:
+    name: Updating server repo
     runs-on: ubuntu-latest
+    environment: HSEDAQ_YaCloud
     steps:
-      - name: Testing SSH
+      - name: SSH
         uses: appleboy/ssh-action@master
         with:
           host: 51.250.24.35
           username: doktorkrab
-          key: ${{ HSEDAQ_YaCloud.KEY }}
+          key: ${{ secrets.KEY }}
           script: |
-            whoami
-            ls -al
+            cd HSEDAQ
+            git pull
+            sudo systemctl restart hsedaq.service
