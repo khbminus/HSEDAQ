@@ -1,10 +1,12 @@
 from typing import Optional
-from db.stocks import get_symbols, get_price, add_long, Long, get_long, Short, add_short, get_short, get_overdue_shorts
+from db.stocks import get_symbols, get_price, add_long, Long, get_long, Short, add_short, get_short, \
+    get_overdue_shorts, get_shorts_portfolio
 from db.users import save_user, User, get_user
 from db.tournaments import get_tournament
 from datetime import datetime, timedelta
 from tg.tournaments import send_overdue_message, get_float
 from loguru import logger
+from decimal import Decimal
 
 
 def basic_checks(symbol: str, amount: int, user: User) -> Optional[str]:
@@ -61,8 +63,16 @@ def short_stock(symbol: str, amount: int, user: User) -> Optional[str]:
     if (err := basic_checks(symbol, amount, user)) is not None:
         return err
 
+    shorts = get_shorts_portfolio(user.user_id, user.tournament_id)
+    current_shorts = Decimal(0)
+    for short in shorts:
+        current_shorts = get_price(short.symbol) * short.amount
+
     price = get_price(symbol)
     current_price = price * amount
+
+    if current_shorts + current_price >= 10000:
+        return "Too many shorts"
 
     user.money += current_price
     save_user(user)
