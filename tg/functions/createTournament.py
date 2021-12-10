@@ -48,7 +48,8 @@ def command_create_tournament(message: Message):
     logger.info(f"Created new tournament {tournament}")
 
     bot.send_message(chat_id=cid,
-                     text=f"Successfully created new tournament with code phrase {tournament.tournament_id}\n"
-                          f"Use `/enter {create_code_phrase(tournament)}` to enter to the tournament\n"
+                     text=f"Successfully created new tournament with code phrase {tournament.code}\n"
+                          f"Use `/enter {tournament.code}` to enter to the tournament\n"
                           f"Once the tournament starts, you will not be able to leave it until"
-                          "the end of the tournament")
+                          "the end of the tournament."
+                          f"Also, new users may use https://telegram.me/hsedaq_bot?start={tournament.code} to start.")

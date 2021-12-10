@@ -21,6 +21,7 @@ class Tournament:
     end_time: datetime
     is_ended: bool = False
     is_started: bool = False
+    code: Optional[str] = None
 
 
 @dataclass

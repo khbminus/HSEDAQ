@@ -2,7 +2,7 @@ from db.types import Tournament, User, Short
 from typing import List
 from tg.bot import Bot
 from typing import Optional
-from db.tournaments import get_tournament
+from db.tournaments import get_tournament_by_code
 from db.stocks import get_longs_portfolio, get_prices
 from decimal import Decimal
 
@@ -23,8 +23,8 @@ def send_start_message(tournament: Tournament, users: List[User]) -> None:
                               "`/short <symbol> <amount>` to short stocks")
 
 
-def check_new_tournament(tournament_id: int) -> Optional[str]:
-    tournament = get_tournament(tournament_id)
+def check_new_tournament(code: str) -> Optional[str]:
+    tournament = get_tournament_by_code(code)
     if tournament is None:
         return "Tournament doesn't exists"
     if tournament.is_ended:
