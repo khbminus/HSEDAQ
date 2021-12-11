@@ -3,6 +3,7 @@ from telebot.types import Message
 from db.types import User
 from db.users import get_user, save_user
 from loguru import logger
+from .enterTournament import command_enter_tournament
 
 bot = Bot().bot
 
@@ -21,5 +22,9 @@ def start_command(message: Message):
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name)
         save_user(user)
+    arguments = message.text.split()[1:]
 
-    bot.send_message(chat_id=cid, text=f"Welcome, {user.first_name}. Use `/help` for list of commands.")
+    if len(arguments) >= 1:  # deep linking
+        command_enter_tournament(message)
+    else:
+        bot.send_message(chat_id=cid, text=f"Welcome, {user.first_name}. Use `/help` for list of commands.")

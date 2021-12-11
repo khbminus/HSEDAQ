@@ -29,6 +29,8 @@ def check_another_tournament(uid: int, cid: int, arguments: List[str]) -> bool:
                          f"You are currently in tournament {tournament.tournament_id}." +
                          f" Entering tournament {arguments[0]}")
         return True
+    if tournament.tournament_id == -1:
+        return True  # default tournament, can exit
     bot.send_message(cid, f"You are currently in active tournament! Sorry :(")
     return False
 
@@ -49,7 +51,7 @@ def command_enter_tournament(message: Message):
         bot.send_message(chat_id=cid, text=f"Bad format: {validate_error}")
         return
 
-    new_tournament_error = check_new_tournament(int(arguments[0]))
+    new_tournament_error = check_new_tournament(arguments[0])
     if new_tournament_error is not None:
         logger.debug(f"User {uid} tried to execute {message.text}, but this got '{validate_error}' error")
         bot.send_message(chat_id=cid, text=f"Bad tournament id: {new_tournament_error}")
