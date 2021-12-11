@@ -1,9 +1,9 @@
 from tg.bot import Bot
 from telebot.types import Message
-from model.tournaments import create_tournament, create_code_phrase
+from model.tournaments import create_tournament
 from loguru import logger
 from typing import Optional, List
-from datetime import datetime, timedelta
+from datetime import datetime
 
 bot = Bot().bot
 

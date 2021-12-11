@@ -29,6 +29,8 @@ def check_another_tournament(uid: int, cid: int, arguments: List[str]) -> bool:
                          f"You are currently in tournament {tournament.tournament_id}." +
                          f" Entering tournament {arguments[0]}")
         return True
+    if tournament.tournament_id == -1:
+        return True  # default tournament, can exit
     bot.send_message(cid, f"You are currently in active tournament! Sorry :(")
     return False
 

@@ -10,7 +10,7 @@ class User:
     chat_id: int
     first_name: str
     last_name: Optional[str] = None
-    tournament_id: Optional[int] = None
+    tournament_id: int = -1
     money: Decimal = 1000
 
 

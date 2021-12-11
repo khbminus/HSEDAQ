@@ -1,5 +1,6 @@
 import psycopg
 from loguru import logger
+from datetime import datetime
 
 
 # TODO: add config for db
@@ -24,7 +25,7 @@ def create_users_table(user_db_name: str) -> None:
     chat_id       int  not null,
     first_name    text not null,
     last_name     text,
-    tournament_id int,
+    tournament_id int default -1,
     money         numeric       not null,
     foreign key (tournament_id)
     references tournaments (tournament_id)
@@ -80,8 +81,23 @@ def create_shorts_table(db_name: str) -> None:
 );''', 'shorts')
 
 
+def create_default_tournament(db_name: str) -> None:
+    try:
+        with psycopg.connect(dbname=db_name, autocommit=True) as conn:
+            with conn.cursor() as cur:
+                logger.info(f"Creating default tournament")
+                cur.execute(
+                    '''INSERT INTO tournaments(tournament_id, start_time, end_time) VALUES (%s, %s, %s) 
+                    ON CONFLICT DO NOTHING ''',
+                    (-1, datetime.fromtimestamp(0), datetime.fromtimestamp(32536799999)))
+    except psycopg.errors.OperationalError as e:
+        logger.error(f"Error on default tournament creation")
+        logger.error(e)
+
+
 def init_databases(db_name: str) -> None:
     create_tournaments_table(db_name)
     create_users_table(db_name)
     create_longs_table(db_name)
     create_shorts_table(db_name)
+    create_default_tournament(db_name)
