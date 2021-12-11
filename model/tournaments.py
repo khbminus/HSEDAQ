@@ -1,10 +1,10 @@
-import time
-
-from db.types import Tournament  # TODO: move types from db?
-from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament
+from db.types import Tournament
+from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament_by_code
 from db.users import get_user, save_user
 from datetime import datetime
 from tg.tournaments import send_finish_statistics, send_start_message
+from random import choices
+from string import ascii_letters
 
 
 # TODO: options?
@@ -13,20 +13,20 @@ def create_tournament(start_time: datetime, end_time: datetime) -> Tournament:
     if len(tournaments) == 0:
         next_id = 0
     else:
-        next_id = max(tournaments, key=lambda x: x.tournament_id).tournament_id + 1  # TODO: query db?
-    tour = Tournament(tournament_id=next_id, start_time=start_time, end_time=end_time)
+        next_id = max(tournaments, key=lambda x: x.tournament_id).tournament_id + 1
+    tour = Tournament(tournament_id=next_id, start_time=start_time, end_time=end_time, code=create_code_phrase())
     save_tournament(tour)
     return tour
 
 
 def complete_pending_tournaments() -> None:
-    time_now = datetime.now()  # TODO: replace with db query?
+    time_now = datetime.now()
     pending = list(filter(lambda t: t.end_time <= time_now and not t.is_ended, get_all_tournaments()))
     for tournament in pending:
         send_finish_statistics(tournament, get_tournament_participants(tournament))
         tournament.is_ended = True
         for user in get_tournament_participants(tournament):
-            user.tournament_id = None
+            user.tournament_id = -1
             save_user(user)
         save_tournament(tournament)
 
@@ -41,11 +41,11 @@ def start_tournaments() -> None:
 
 
 def check_correct_code_phrase(code_phrase: str) -> bool:
-    return code_phrase.isdigit() and get_tournament(int(code_phrase)) is not None
+    return True  # FIXME
 
 
 def enter_tournament(user_id: int, code_phrase: str) -> None:
-    tournament = get_tournament(int(code_phrase))  # If code phrase is not id
+    tournament = get_tournament_by_code(code_phrase)  # If code phrase is not id
     user = get_user(user_id)
     if user is None or tournament is None:
         raise ValueError  # Replace with custom exception
@@ -58,10 +58,9 @@ def tournaments_polling() -> None:
     start_tournaments()
 
 
-def create_code_phrase(tournament: Tournament) -> str:
+def create_code_phrase() -> str:
     """
-    Generate code phrase to enter tournament for /enter <tournament> instead of using deep linking
-    :param tournament: tournament to link with
+    Generate code phrase to enter tournament for /enter <tournament> / deep-linking
     :return: code phrase
     """
-    return str(tournament.tournament_id)  # WOW
+    return ''.join(choices(ascii_letters, k=16))

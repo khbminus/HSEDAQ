@@ -15,20 +15,30 @@ def get_tournament(tournament_id: int) -> Optional[Tournament]:
     return res
 
 
+def get_tournament_by_code(code: str) -> Optional[Tournament]:
+    logger.debug(f"Getting tournament with code={code}")
+    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
+        with conn.cursor(row_factory=class_row(Tournament)) as cur:
+            res = cur.execute("SELECT * from tournaments WHERE code=%s", (code,)).fetchone()
+    logger.debug(f"Got tournament with id {code}: {res}")
+    return res
+
+
 def save_tournament(tournament: Tournament) -> None:
     logger.debug(f"Saving {tournament}")
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(Tournament)) as cur:
-            cur.execute("""INSERT INTO tournaments(tournament_id, start_time, end_time, is_ended, is_started) 
-                            VALUES (%s, %s, %s, %s, %s)
+            cur.execute("""INSERT INTO tournaments(tournament_id, start_time, end_time, is_ended, is_started, code) 
+                            VALUES (%s, %s, %s, %s, %s, %s)
                             ON CONFLICT (tournament_id) DO UPDATE 
                               SET start_time = excluded.start_time, 
                                   end_time = excluded.end_time,
                                   is_ended = excluded.is_ended,
-                                  is_started = excluded.is_started
+                                  is_started = excluded.is_started,
+                                  code = excluded.code
                                   """,
                         (tournament.tournament_id, tournament.start_time, tournament.end_time, tournament.is_ended,
-                         tournament.is_started))
+                         tournament.is_started, tournament.code))
     logger.debug(f"Saved {tournament.tournament_id}")
 
 
