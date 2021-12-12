@@ -55,3 +55,11 @@ def get_tournament_participants(tournament: Tournament) -> List[User]:
         with conn.cursor(row_factory=class_row(User)) as cur:
             res = cur.execute("SELECT * FROM users WHERE tournament_id=%s", (tournament.tournament_id,)).fetchall()
     return res
+
+
+def update_default_tournament():
+    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM longs where tournament_id = -1;")
+            cur.execute("DELETE FROM shorts where tournament_id = -1;")
+            cur.execute("UPDATE users SET money=1000 where tournament_id=-1;")

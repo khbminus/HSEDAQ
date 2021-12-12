@@ -5,7 +5,7 @@ from telebot.callback_data import CallbackData, CallbackDataFilter
 from telebot.custom_filters import AdvancedCustomFilter
 from telebot.types import CallbackQuery
 from db.stocks import tickers, get_price, get_longs_portfolio, get_shorts_portfolio
-from tg.tournaments import get_float
+from tg.utils import get_float
 from tg.bot import Bot
 
 bot = Bot().bot
@@ -46,6 +46,22 @@ def back_to_tournament():
     return types.InlineKeyboardMarkup(
         keyboard=[
             [types.InlineKeyboardButton(text="Back", callback_data="back_tour")]
+        ]
+    )
+
+
+def leave_tournament():
+    return types.InlineKeyboardMarkup(
+        keyboard=[
+            [types.InlineKeyboardButton(text="Leave tournament", callback_data="leave")]
+        ]
+    )
+
+
+def delete_button():
+    return types.InlineKeyboardMarkup(
+        keyboard=[
+            [types.InlineKeyboardButton(text="Delete this message", callback_data="del")]
         ]
     )
 

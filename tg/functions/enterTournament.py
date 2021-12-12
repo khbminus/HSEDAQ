@@ -6,6 +6,7 @@ from typing import Optional, List
 from db.users import get_user, save_user
 from db.tournaments import get_tournament
 from tg.tournaments import check_new_tournament
+from tg.keyboards import tournament_menu, back_to_main
 
 bot = Bot().bot
 
@@ -57,15 +58,14 @@ def command_enter_tournament(message: Message):
         bot.send_message(chat_id=cid, text=f"Bad tournament id: {new_tournament_error}")
         return
 
-    try:
-        enter_tournament(uid, arguments[0])
-    except ValueError:
+    if (err := enter_tournament(uid, arguments[0])) is not None:
         logger.error(f"Validate failed with query {message.text}!")
-        bot.send_message(chat_id=cid, text=f"WTF?! I'm failed:( Try again later")
+        bot.send_message(chat_id=cid, text=f"WTF?! I'm failed:( Try again later\nError: {err}",
+                         reply_markup=back_to_main())
     else:
         bot.send_message(chat_id=cid,
                          text="You have entered to the tournament. " +
-                              "Use `/status` to get information about the tournament.")
+                              "Choose action:", reply_markup=tournament_menu())
 
 
 @bot.callback_query_handler(func=lambda c: c.data == 'enter')

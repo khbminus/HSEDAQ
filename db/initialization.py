@@ -30,7 +30,8 @@ def create_users_table(user_db_name: str) -> None:
     foreign key (tournament_id)
     references tournaments (tournament_id),
     sketch_query text default null,
-    sketch_text  text default null
+    sketch_text  text default null,
+    last_message_id int
 );""", "users")
 
 

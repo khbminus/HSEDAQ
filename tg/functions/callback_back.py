@@ -1,6 +1,7 @@
 from tg.bot import Bot
 from telebot.types import CallbackQuery
 from tg.keyboards import main_menu, tournament_menu
+from db.users import get_user, save_user
 
 bot = Bot().bot
 
@@ -14,6 +15,19 @@ def callback_back_to_main(call: CallbackQuery) -> None:
     bot.edit_message_text(chat_id=cid, message_id=message.message_id, text=response_text, reply_markup=main_menu())
 
 
+@bot.callback_query_handler(func=lambda x: x.data == 'leave')
+def callback_leave(call: CallbackQuery) -> None:
+    message = call.message
+    cid = message.chat.id
+
+    response_text = 'Choose action: '
+    user = get_user(cid)
+    user.tournament_id = -1
+    user.money = 1000
+    save_user(user)
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text=response_text, reply_markup=main_menu())
+
+
 @bot.callback_query_handler(func=lambda x: x.data == 'back_tour')
 def callback_back_to_tournament(call: CallbackQuery) -> None:
     message = call.message
@@ -22,3 +36,11 @@ def callback_back_to_tournament(call: CallbackQuery) -> None:
     response_text = 'Choose action: '
     bot.edit_message_text(chat_id=cid, message_id=message.message_id, text=response_text,
                           reply_markup=tournament_menu())
+
+
+@bot.callback_query_handler(func=lambda x: x.data == 'del')
+def callback_delete_message(call: CallbackQuery) -> None:
+    message = call.message
+    cid = message.chat.id
+
+    bot.delete_message(chat_id=cid, message_id=message.message_id)
