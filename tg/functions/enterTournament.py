@@ -1,9 +1,9 @@
 from tg.bot import Bot
-from telebot.types import Message
+from telebot.types import Message, CallbackQuery
 from model.tournaments import enter_tournament, check_correct_code_phrase
 from loguru import logger
 from typing import Optional, List
-from db.users import get_user
+from db.users import get_user, save_user
 from db.tournaments import get_tournament
 from tg.tournaments import check_new_tournament
 
@@ -66,3 +66,17 @@ def command_enter_tournament(message: Message):
         bot.send_message(chat_id=cid,
                          text="You have entered to the tournament. " +
                               "Use `/status` to get information about the tournament.")
+
+
+@bot.callback_query_handler(func=lambda c: c.data == 'enter')
+def callback_enter_tournament(call: CallbackQuery) -> None:
+    message = call.message
+    cid = message.chat.id
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Please enter a code phrase: ",
+                          reply_markup=None)
+
+    user = get_user(cid)
+    user.sketch_query = "enter"
+    user.sketch_text = None
+    save_user(user)
+    # Waiting to code phrase

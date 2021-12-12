@@ -28,7 +28,9 @@ def create_users_table(user_db_name: str) -> None:
     tournament_id int default -1,
     money         numeric       not null,
     foreign key (tournament_id)
-    references tournaments (tournament_id)
+    references tournaments (tournament_id),
+    sketch_query text default null,
+    sketch_text  text default null
 );""", "users")
 
 

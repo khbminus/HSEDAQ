@@ -4,6 +4,7 @@ from db.types import User
 from db.users import get_user, save_user
 from loguru import logger
 from .enterTournament import command_enter_tournament
+from tg.keyboards import main_menu
 
 bot = Bot().bot
 
@@ -27,4 +28,5 @@ def start_command(message: Message):
     if len(arguments) >= 1:  # deep linking
         command_enter_tournament(message)
     else:
-        bot.send_message(chat_id=cid, text=f"Welcome, {user.first_name}. Use `/help` for list of commands.")
+        bot.send_message(chat_id=cid, text=f"Welcome, {user.first_name}. Use `/help` for list of commands.",
+                         reply_markup=main_menu())

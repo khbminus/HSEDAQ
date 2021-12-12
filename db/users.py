@@ -19,13 +19,18 @@ def save_user(user: User) -> None:
     logger.debug(f"Saving {user}")
     with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
         with conn.cursor(row_factory=class_row(User)) as cur:
-            cur.execute("""INSERT INTO users(user_id, chat_id, first_name, last_name, tournament_id, money) 
-                            VALUES (%s, %s, %s, %s, %s, %s)
+            cur.execute("""INSERT INTO users(user_id, chat_id, first_name, last_name, tournament_id, money, 
+                            sketch_query, sketch_text) 
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                             ON CONFLICT (user_id) DO UPDATE 
                               SET chat_id = excluded.chat_id,
                                   first_name = excluded.first_name, 
                                   last_name = excluded.last_name,
                                   tournament_id = excluded.tournament_id,
-                                  money = excluded.money;""",
-                        (user.user_id, user.chat_id, user.first_name, user.last_name, user.tournament_id, user.money))
+                                  money = excluded.money,
+                                  sketch_query = excluded.sketch_query,
+                                  sketch_text = excluded.sketch_text
+                                ;""",
+                        (user.user_id, user.chat_id, user.first_name, user.last_name, user.tournament_id, user.money,
+                         user.sketch_query, user.sketch_text))
     logger.debug(f"Saved {user.user_id}")
