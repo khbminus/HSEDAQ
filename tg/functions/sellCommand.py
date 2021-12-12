@@ -1,10 +1,13 @@
 from tg.bot import Bot
-from telebot.types import Message
+from telebot.types import Message, CallbackQuery
 from loguru import logger
 from typing import Optional, List
 from model.stocks import sell_stock
-from db.users import get_user
+from db.users import get_user, save_user
 from tg.tournaments import get_float
+from telebot.callback_data import CallbackData, CallbackDataFilter
+from telebot.custom_filters import AdvancedCustomFilter
+from tg.keyboards import get_longs_keyboard
 
 bot = Bot().bot
 
@@ -39,3 +42,46 @@ def command_sell_stock(message: Message):
         return
     bot.send_message(chat_id=cid, text=f"Successfully sold {arguments[1]} stocks of {arguments[0]}. "
                                        f"Your balance is ${get_float(get_user(uid).money)}")
+
+
+sell_factory = CallbackData('symbol', prefix='sell')
+
+
+class SellCallbackFilter(AdvancedCustomFilter):
+    key = 'config'
+
+    def check(self, call: CallbackQuery, config: CallbackDataFilter):
+        return config.check(query=call)
+
+
+bot.add_custom_filter(SellCallbackFilter())
+
+
+@bot.callback_query_handler(func=lambda c: c.data == 'sell')
+def callback_sell(call: CallbackQuery) -> None:
+    message = call.message
+    cid = message.chat.id
+    user = get_user(cid)
+
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Processing...",
+                          reply_markup=None)
+
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Choose a stock to sell:",
+                          reply_markup=get_longs_keyboard(cid, user.tournament_id, 0, sell_factory))
+
+
+@bot.callback_query_handler(func=None, config=sell_factory.filter())
+def callback_sell_stock(call: CallbackQuery) -> None:
+    callback_data = sell_factory.parse(callback_data=call.data)
+    message = call.message
+    cid = message.chat.id
+
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id,
+                          text=f"You are going to sell {callback_data['symbol']}."
+                               f" Please enter amount of stocks to sell:")
+
+    user = get_user(cid)
+    user.sketch_text = callback_data['symbol']
+    user.sketch_query = "sell"
+    save_user(user)
+    # wait for amount

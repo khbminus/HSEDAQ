@@ -12,6 +12,9 @@ class User:
     last_name: Optional[str] = None
     tournament_id: int = -1
     money: Decimal = 1000
+    sketch_query: Optional[str] = None
+    sketch_text: Optional[str] = None
+    last_message_id: Optional[int] = None
 
 
 @dataclass

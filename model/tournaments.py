@@ -1,3 +1,5 @@
+from typing import Optional
+
 from db.types import Tournament
 from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament_by_code
 from db.users import get_user, save_user
@@ -44,11 +46,13 @@ def check_correct_code_phrase(code_phrase: str) -> bool:
     return True  # FIXME
 
 
-def enter_tournament(user_id: int, code_phrase: str) -> None:
+def enter_tournament(user_id: int, code_phrase: str) -> Optional[str]:
     tournament = get_tournament_by_code(code_phrase)  # If code phrase is not id
     user = get_user(user_id)
-    if user is None or tournament is None:
-        raise ValueError  # Replace with custom exception
+    if tournament is None:
+        return f"Tournament with code phrase '{code_phrase}' not found"
+    if tournament.is_ended:
+        return f"Tournament has ended"
     user.tournament_id, user.money = tournament.tournament_id, 1000  # starting parameters
     save_user(user)
 
