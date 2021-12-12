@@ -66,11 +66,10 @@ def short_stock(symbol: str, amount: int, user: User) -> Optional[str]:
     shorts = get_shorts_portfolio(user.user_id, user.tournament_id)
     current_shorts = Decimal(0)
     for short in shorts:
-        current_shorts = get_price(short.symbol) * short.amount
+        current_shorts += get_price(short.symbol) * short.amount
 
     price = get_price(symbol)
     current_price = price * amount
-
     if current_shorts + current_price >= 100000:
         return "Too many shorts. You can't short more than $100,000"
 
