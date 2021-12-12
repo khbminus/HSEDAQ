@@ -16,7 +16,8 @@ def main_menu():
         keyboard=[
             [types.InlineKeyboardButton(text="New tournament", callback_data="new")],
             [types.InlineKeyboardButton(text="Enter to existing tournament", callback_data="enter")],
-            [types.InlineKeyboardButton(text="About me", callback_data="about_me")]
+            [types.InlineKeyboardButton(text="About me", callback_data="about_me")],
+            [types.InlineKeyboardButton(text='Tournament menu', callback_data="back_tour")]
         ]
     )
 
