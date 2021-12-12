@@ -1,5 +1,5 @@
 from tg.bot import Bot
-from telebot.types import CallbackQuery
+from telebot.types import CallbackQuery, InlineKeyboardButton
 from tg.keyboards import main_menu, tournament_menu
 from db.users import get_user, save_user
 
@@ -34,8 +34,12 @@ def callback_back_to_tournament(call: CallbackQuery) -> None:
     cid = message.chat.id
 
     response_text = 'Choose action: '
+    user = get_user(cid)
+    keyboard = tournament_menu()
+    if user.tournament_id == -1:
+        keyboard.keyboard.append([InlineKeyboardButton(text='Back to main menu', callback_data='back_main')])
     bot.edit_message_text(chat_id=cid, message_id=message.message_id, text=response_text,
-                          reply_markup=tournament_menu())
+                          reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda x: x.data == 'del')
