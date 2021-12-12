@@ -10,8 +10,11 @@ class User:
     chat_id: int
     first_name: str
     last_name: Optional[str] = None
-    tournament_id: Optional[int] = None
+    tournament_id: int = -1
     money: Decimal = 1000
+    sketch_query: Optional[str] = None
+    sketch_text: Optional[str] = None
+    last_message_id: Optional[int] = None
 
 
 @dataclass
@@ -21,6 +24,7 @@ class Tournament:
     end_time: datetime
     is_ended: bool = False
     is_started: bool = False
+    code: Optional[str] = None
 
 
 @dataclass

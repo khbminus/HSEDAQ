@@ -3,6 +3,8 @@ from telebot.types import Message
 from db.types import User
 from db.users import get_user, save_user
 from loguru import logger
+from .enterTournament import command_enter_tournament
+from tg.keyboards import main_menu
 
 bot = Bot().bot
 
@@ -19,7 +21,16 @@ def start_command(message: Message):
             user_id=uid,
             chat_id=cid,
             first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name)
+            last_name=message.from_user.last_name, )
         save_user(user)
+    arguments = message.text.split()[1:]
 
-    bot.send_message(chat_id=cid, text=f"Welcome, {user.first_name}. Use `/help` for list of commands.")
+    if len(arguments) >= 1:  # deep linking
+        command_enter_tournament(message)
+    else:
+        last_message = bot.send_message(chat_id=cid,
+                                        text=f"Welcome, {user.first_name}. Choose action:",
+                                        reply_markup=main_menu())
+
+        user.last_message_id = last_message.message_id
+        save_user(user)

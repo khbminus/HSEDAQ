@@ -1,11 +1,12 @@
 from tg.bot import Bot
-from telebot.types import Message
+from telebot.types import Message, CallbackQuery
 from model.tournaments import enter_tournament, check_correct_code_phrase
 from loguru import logger
 from typing import Optional, List
-from db.users import get_user
+from db.users import get_user, save_user
 from db.tournaments import get_tournament
 from tg.tournaments import check_new_tournament
+from tg.keyboards import tournament_menu, back_to_main
 
 bot = Bot().bot
 
@@ -29,6 +30,8 @@ def check_another_tournament(uid: int, cid: int, arguments: List[str]) -> bool:
                          f"You are currently in tournament {tournament.tournament_id}." +
                          f" Entering tournament {arguments[0]}")
         return True
+    if tournament.tournament_id == -1:
+        return True  # default tournament, can exit
     bot.send_message(cid, f"You are currently in active tournament! Sorry :(")
     return False
 
@@ -49,18 +52,31 @@ def command_enter_tournament(message: Message):
         bot.send_message(chat_id=cid, text=f"Bad format: {validate_error}")
         return
 
-    new_tournament_error = check_new_tournament(int(arguments[0]))
+    new_tournament_error = check_new_tournament(arguments[0])
     if new_tournament_error is not None:
         logger.debug(f"User {uid} tried to execute {message.text}, but this got '{validate_error}' error")
         bot.send_message(chat_id=cid, text=f"Bad tournament id: {new_tournament_error}")
         return
 
-    try:
-        enter_tournament(uid, arguments[0])
-    except ValueError:
+    if (err := enter_tournament(uid, arguments[0])) is not None:
         logger.error(f"Validate failed with query {message.text}!")
-        bot.send_message(chat_id=cid, text=f"WTF?! I'm failed:( Try again later")
+        bot.send_message(chat_id=cid, text=f"WTF?! I'm failed:( Try again later\nError: {err}",
+                         reply_markup=back_to_main())
     else:
         bot.send_message(chat_id=cid,
                          text="You have entered to the tournament. " +
-                              "Use `/status` to get information about the tournament.")
+                              "Choose action:", reply_markup=tournament_menu())
+
+
+@bot.callback_query_handler(func=lambda c: c.data == 'enter')
+def callback_enter_tournament(call: CallbackQuery) -> None:
+    message = call.message
+    cid = message.chat.id
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Please enter a code phrase: ",
+                          reply_markup=None)
+
+    user = get_user(cid)
+    user.sketch_query = "enter"
+    user.sketch_text = None
+    save_user(user)
+    # Waiting to code phrase
