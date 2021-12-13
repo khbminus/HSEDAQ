@@ -24,6 +24,7 @@ Old users should run `/start` command to make the menu appear.
 - Default tournament (updates every week)
 - Shorts
 - Rating
+- Overall plot after tournament! (doesn't work in default tournament)
 
 ## Deployment
 
