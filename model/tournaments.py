@@ -1,7 +1,9 @@
 from typing import Optional
 
 from db.types import Tournament
-from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament_by_code
+from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament_by_code, \
+    get_active_tournaments
+from db.snapshots import update_snapshots
 from db.users import get_user, save_user
 from datetime import datetime
 from tg.tournaments import send_finish_statistics, send_start_message
@@ -55,6 +57,12 @@ def enter_tournament(user_id: int, code_phrase: str) -> Optional[str]:
         return f"Tournament has ended"
     user.tournament_id, user.money = tournament.tournament_id, 1000  # starting parameters
     save_user(user)
+
+
+def make_snapshots():
+    tournaments = get_active_tournaments()
+    for tournament in tournaments:
+        update_snapshots(tournament)
 
 
 def tournaments_polling() -> None:
