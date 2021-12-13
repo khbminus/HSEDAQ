@@ -21,6 +21,7 @@ def send_finish_statistics(tournament: Tournament, users: List[User]) -> None:
                                                 palette="tab10", legend='brief', kind='line')
 
     plot.set_axis_labels(x_var='', y_var='')
+    plot.set_xticklabels(rotation=45)
 
     for user in users:
         bot.edit_message_text(chat_id=user.chat_id, message_id=user.last_message_id, text="Processing...",
