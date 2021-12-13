@@ -117,4 +117,5 @@ def init_databases(db_name: str) -> None:
     create_users_table(db_name)
     create_longs_table(db_name)
     create_shorts_table(db_name)
+    create_snapshots_table(db_name)
     create_default_tournament(db_name)
