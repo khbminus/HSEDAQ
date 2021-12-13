@@ -2,7 +2,7 @@ from typing import Optional
 
 from db.types import Tournament
 from db.tournaments import get_all_tournaments, save_tournament, get_tournament_participants, get_tournament_by_code, \
-    get_active_tournaments
+    get_active_tournaments, get_code_phrase
 from db.snapshots import update_snapshots
 from db.users import get_user, save_user
 from datetime import datetime
@@ -11,7 +11,6 @@ from random import choices
 from string import ascii_letters
 
 
-# TODO: options?
 def create_tournament(start_time: datetime, end_time: datetime) -> Tournament:
     tournaments = get_all_tournaments()
     if len(tournaments) == 0:
@@ -45,11 +44,11 @@ def start_tournaments() -> None:
 
 
 def check_correct_code_phrase(code_phrase: str) -> bool:
-    return True  # FIXME
+    return code_phrase in get_code_phrase()
 
 
 def enter_tournament(user_id: int, code_phrase: str) -> Optional[str]:
-    tournament = get_tournament_by_code(code_phrase)  # If code phrase is not id
+    tournament = get_tournament_by_code(code_phrase)
     user = get_user(user_id)
     if tournament is None:
         return f"Tournament with code phrase '{code_phrase}' not found"

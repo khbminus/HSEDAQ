@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Set
 from db.types import Tournament, User
 from db.consts import DB_NAME
 import psycopg
@@ -71,3 +71,10 @@ def get_active_tournaments() -> List[Tournament]:
             res = cur.execute(
                 "SELECT * FROM tournaments WHERE is_started and not is_ended and tournament_id != -1;").fetchall()
     return res
+
+
+def get_code_phrase() -> Set[str]:
+    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
+        with conn.cursor() as cur:
+            res = cur.execute("SELECT code FROM tournaments WHERE code=%s", (code,)).fetchall()
+    return set(res)
