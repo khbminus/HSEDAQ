@@ -63,3 +63,11 @@ def update_default_tournament():
             cur.execute("DELETE FROM longs where tournament_id = -1;")
             cur.execute("DELETE FROM shorts where tournament_id = -1;")
             cur.execute("UPDATE users SET money=1000 where tournament_id=-1;")
+
+
+def get_active_tournaments() -> List[Tournament]:
+    with psycopg.connect(dbname=DB_NAME, autocommit=True) as conn:
+        with conn.cursor(row_factory=class_row(Tournament)) as cur:
+            res = cur.execute(
+                "SELECT * FROM tournaments WHERE is_started and not is_ended and tournament_id != -1;").fetchall()
+    return res

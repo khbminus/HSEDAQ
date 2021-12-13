@@ -1,14 +1,15 @@
 from time import sleep
 from tg.bot import Bot
-from model.tournaments import tournaments_polling
+from model.tournaments import tournaments_polling, make_snapshots
 from model.stocks import overdue_shorts
 from db.tournaments import update_default_tournament
 import threading
 import schedule
 import tg.functions
 
-schedule.every(10).seconds.do(tournaments_polling)
-schedule.every(10).seconds.do(overdue_shorts)
+schedule.every(5).seconds.do(tournaments_polling)
+schedule.every(5).seconds.do(overdue_shorts)
+schedule.every(10).seconds.do(make_snapshots)
 schedule.every().week.do(update_default_tournament)
 
 

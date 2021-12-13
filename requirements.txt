@@ -9,3 +9,5 @@ loguru~=0.5.3
 psycopg~=3.0.4
 cachetools~=4.2.4
 schedule~=1.1.0
+seaborn~=0.11.2
+Pillow~=8.4.0

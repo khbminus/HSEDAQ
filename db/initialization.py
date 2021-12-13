@@ -84,6 +84,20 @@ def create_shorts_table(db_name: str) -> None:
 );''', 'shorts')
 
 
+def create_snapshots_table(db_name: str) -> None:
+    create_wrapper(db_name, '''create table if not exists snapshots
+(
+    user_id       int
+        constraint snapshots_users_user_id_fk
+            references users,
+    tournament_id int
+        constraint snapshots_tournaments_tournament_id_fk
+            references tournaments,
+    time          timestamp,
+    money         numeric
+);''', 'snapshots')
+
+
 def create_default_tournament(db_name: str) -> None:
     try:
         with psycopg.connect(dbname=db_name, autocommit=True) as conn:
