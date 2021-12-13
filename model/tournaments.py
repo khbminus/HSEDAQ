@@ -30,6 +30,7 @@ def complete_pending_tournaments() -> None:
         tournament.is_ended = True
         for user in get_tournament_participants(tournament):
             user.tournament_id = -1
+            user.money = 1000
             save_user(user)
         save_tournament(tournament)
 
