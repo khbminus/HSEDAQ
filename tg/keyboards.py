@@ -74,11 +74,14 @@ def get_pages(arr: List[T], page_size: int) -> List[List[T]]:
     pages = []
     for i in range(0, len(arr), page_size):
         pages.append(arr[i:i + page_size])
+    if len(pages) == 0:
+        return [[]]
     return pages
 
 
 stock_pages_factory = CallbackData('page', 'type', prefix="pages")
-sell_return_page_factory = CallbackData('page', 'type', 'uid', 'tid', 'text', 'func', prefix="pages2")
+sell_return_page_factory = CallbackData('page', 'type', 'uid', 'tid', 'func', prefix="pages2")
+texts = {'get_shorts_keyboard': 'Choose a short to return', 'get_longs_keyboard': 'Choose a stock to sell'}
 
 
 class PagesCallbackFilter(AdvancedCustomFilter):
@@ -157,9 +160,9 @@ def callback_buy_prev_page(call: CallbackQuery) -> None:
         factory = return_short_factory
 
     bot.edit_message_text(chat_id=cid, message_id=message.message_id,
-                          text=callback_data['text'],
+                          text=texts[callback_data['func']],
                           reply_markup=globals()[callback_data['func']](callback_data['uid'], callback_data['tid'],
-                                                                        callback_data['page'], factory))
+                                                                        int(callback_data['page']), factory))
 
 
 def get_longs_keyboard(uid: int, tid: int, page: int, factory: CallbackData):
@@ -176,14 +179,12 @@ def get_longs_keyboard(uid: int, tid: int, page: int, factory: CallbackData):
                                     callback_data=sell_return_page_factory.new(page=max(0, page - 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a stock to sell",
                                                                                func='get_longs_keyboard')),
          types.InlineKeyboardButton(text=f"{page + 1}/{len(pages)}", callback_data="page_num"),
          types.InlineKeyboardButton(text="➡",
-                                    callback_data=sell_return_page_factory.new(page=min(len(pages), page + 1),
+                                    callback_data=sell_return_page_factory.new(page=min(len(pages) - 1, page + 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a stock to sell",
                                                                                func='get_longs_keyboard'))])
     markup.append([types.InlineKeyboardButton(text="Back to menu", callback_data='back_tour')])
     return types.InlineKeyboardMarkup(keyboard=markup)
@@ -207,14 +208,12 @@ def get_shorts_keyboard(uid: int, tid: int, page: int, factory: CallbackData):
                                     callback_data=sell_return_page_factory.new(page=max(0, page - 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a short to return",
                                                                                func='get_shorts_keyboard')),
          types.InlineKeyboardButton(text=f"{page + 1}/{len(pages)}", callback_data="page_num"),
          types.InlineKeyboardButton(text="➡",
-                                    callback_data=sell_return_page_factory.new(page=min(len(pages), page + 1),
+                                    callback_data=sell_return_page_factory.new(page=min(len(pages) - 1, page + 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a short to return",
                                                                                func='get_shorts_keyboard'))])
     markup.append([types.InlineKeyboardButton(text="Back to menu", callback_data='back_tour')])
     return types.InlineKeyboardMarkup(keyboard=markup)
