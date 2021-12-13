@@ -19,7 +19,7 @@ tickers = ['MSFT', 'AAPL', 'AMZN', 'TSLA', 'GOOGL', 'GOOG', 'FB', 'NVDA', 'JPM',
 def get_price(symbol: str) -> Decimal:
     date_now = datetime.now()
     logger.debug(f"Getting stock {symbol} at {date_now.strftime('%l:%M%p on %b %d, %Y')}")
-    data = download(symbol, interval='1m', period="1d", group_by="ticker")
+    data = download(symbol, interval='1m', period="1d", group_by="ticker", progress=False)
     return Decimal(data["Open"].dropna()[-1])
 
 
