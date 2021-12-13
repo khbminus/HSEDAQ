@@ -66,7 +66,7 @@ def callback_return(call: CallbackQuery) -> None:
     bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Processing...",
                           reply_markup=None)
 
-    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Choose a stock to sell:",
+    bot.edit_message_text(chat_id=cid, message_id=message.message_id, text="Choose a short to return:",
                           reply_markup=get_shorts_keyboard(cid, user.tournament_id, 0, return_short_factory))
 
 

@@ -1,6 +1,7 @@
 from tg.bot import Bot
 from telebot.types import Message, CallbackQuery
 from db.users import get_user, save_user
+from db.stocks import get_shorts_portfolio
 from db.tournaments import get_tournament
 from model.tournaments import enter_tournament, create_tournament
 from model.stocks import buy_stock, short_stock, sell_stock, return_short_by_index
@@ -75,13 +76,16 @@ def state_handler(message: Message):
         if not text.isdigit():
             last_message = bot.send_message(chat_id=cid, text="Invalid amount of stock",
                                             reply_markup=back_to_tournament())
-        elif (err := return_short_by_index(int(user.sketch_text), int(text), user)) is not None:
-            last_message = bot.send_message(chat_id=cid, text=err, reply_markup=back_to_tournament())
         else:
-            last_message = bot.send_message(chat_id=cid,
-                                            text=f"successfully returned {text} of {user.sketch_text}!",
-                                            reply_markup=back_to_tournament())
-    user = get_user(uid)
+            symbol = get_shorts_portfolio(user.user_id, user.tournament_id)[int(user.sketch_text)].symbol
+            if (err := return_short_by_index(int(user.sketch_text), int(text), user)) is not None:
+                last_message = bot.send_message(chat_id=cid, text=err, reply_markup=back_to_tournament())
+            else:
+                last_message = bot.send_message(chat_id=cid,
+                                                text=f"successfully returned {text} of "
+                                                     f"{symbol}!",
+                                                reply_markup=back_to_tournament())
+        user = get_user(uid)
     changed_sketch = False
     if user.sketch_query == 'create_a':  # if instead of elif is correct here
         if check_time(text):
