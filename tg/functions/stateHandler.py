@@ -102,7 +102,7 @@ def state_handler(message: Message):
                                   f"Once the tournament starts, you will not be able to leave it until"
                                   "the end of the tournament."
                                   f"Also, new users may use "
-                                  f"https://t.me/hsedaq\\_devbot?start={tournament.code} to start.")
+                                  f"https://t.me/hsedaq\\_bot?start={tournament.code} to start.")
             last_message = bot.send_message(chat_id=cid,
                                             text="Choose action:", reply_markup=main_menu())
 
