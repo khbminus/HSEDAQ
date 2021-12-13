@@ -78,7 +78,7 @@ def get_pages(arr: List[T], page_size: int) -> List[List[T]]:
 
 
 stock_pages_factory = CallbackData('page', 'type', prefix="pages")
-sell_return_page_factory = CallbackData('page', 'type', 'uid', 'tid', 'text', prefix="pages2")
+sell_return_page_factory = CallbackData('page', 'type', 'uid', 'tid', 'text', 'func', prefix="pages2")
 
 
 class PagesCallbackFilter(AdvancedCustomFilter):
@@ -176,13 +176,15 @@ def get_longs_keyboard(uid: int, tid: int, page: int, factory: CallbackData):
                                     callback_data=sell_return_page_factory.new(page=max(0, page - 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a stock to sell")),
+                                                                               text="Choose a stock to sell",
+                                                                               func='get_longs_keyboard')),
          types.InlineKeyboardButton(text=f"{page + 1}/{len(pages)}", callback_data="page_num"),
          types.InlineKeyboardButton(text="➡",
                                     callback_data=sell_return_page_factory.new(page=min(len(pages), page + 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a stock to sell"))])
+                                                                               text="Choose a stock to sell",
+                                                                               func='get_longs_keyboard'))])
     markup.append([types.InlineKeyboardButton(text="Back to menu", callback_data='back_tour')])
     return types.InlineKeyboardMarkup(keyboard=markup)
 
@@ -205,12 +207,14 @@ def get_shorts_keyboard(uid: int, tid: int, page: int, factory: CallbackData):
                                     callback_data=sell_return_page_factory.new(page=max(0, page - 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a short to return")),
+                                                                               text="Choose a short to return",
+                                                                               func='get_shorts_keyboard')),
          types.InlineKeyboardButton(text=f"{page + 1}/{len(pages)}", callback_data="page_num"),
          types.InlineKeyboardButton(text="➡",
                                     callback_data=sell_return_page_factory.new(page=min(len(pages), page + 1),
                                                                                type=factory.prefix,
                                                                                uid=uid, tid=tid,
-                                                                               text="Choose a short to return"))])
+                                                                               text="Choose a short to return",
+                                                                               func='get_shorts_keyboard'))])
     markup.append([types.InlineKeyboardButton(text="Back to menu", callback_data='back_tour')])
     return types.InlineKeyboardMarkup(keyboard=markup)
