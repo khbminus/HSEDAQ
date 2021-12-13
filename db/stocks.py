@@ -101,3 +101,4 @@ def get_short(uid: int, tid: int, symbol: str) -> Short:
                 "SELECT * FROM shorts WHERE user_id=%s and tournament_id=%s and symbol=%s and buy_date >= %s",
                 (uid, tid, symbol, from_date)).fetchone()
     return res
+
